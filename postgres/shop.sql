@@ -1,3 +1,7 @@
+--create database shop
+
+drop view if exists  all_items;
+drop view if exists  all_items_ids;
 drop table if exists  item_type_relation;
 drop table if exists  item_item_type_relation;
 drop table if exists  color_item_relation;
@@ -106,7 +110,7 @@ insert into item_type(type) values ('Combeds 30s'), ('Combeds 20s'), ('Polo'),
                                    ('Hoodie no Zipper'), ('Hoodie with Zipper'), ('Without Picture'),
                                    ('With Picture');
 
-insert into size(size) values('XS'), ('S'), ('M'), ('L'), ('XL'), ('XXL'), ('XXXL'), ('XXXXL'), ('A4'), ('A3');
+insert into size(size) values('XS'), ('S'), ('M'), ('L'), ('XL'), ('XXL'), ('XXXL'), ('XXXXL');
 
 insert into picture_size(size) values ('A4'), ('A3');
 
@@ -189,3 +193,44 @@ insert into item_picture_size_relation(item_id, picture_size_id) VALUES
 (51, 1), (52, 1), (53, 1), (54, 1), (55, 1), (56, 1), (57, 2), (58, 2), (59, 2), (60, 2),
 (61, 2), (62, 2), (63, 2), (64, 2),  (89, 1), (90, 1),
 (91, 1), (92, 2), (93, 2), (94, 2), (95, 1), (96, 1), (97, 1), (98, 2), (99, 2), (100, 2);
+
+----------------------------------View----------------------------------------------------
+create view all_items as
+select items.id, type.type as type, item_type.type as itemType,
+       color.color, s.size as ShirtSize, picture_size.size as pictureSize,
+       items.price as price
+from items
+full outer join item_type_relation itr on items.id = itr.item_id
+full outer join type on type.id = itr.type_id
+full outer join item_item_type_relation iitr on items.id = iitr.item_id
+full outer join item_type on item_type.id = iitr.item_type_id
+full outer join color_item_relation cir on items.id = cir.item_id
+full outer join color on cir.color_id = color.id
+full outer join item_picture_size_relation ipsr on items.id = ipsr.item_id
+full outer join picture_size on picture_size.id = ipsr.picture_size_id
+full outer join item_size_relation isr on items.id = isr.item_id
+full outer join size s on isr.size_id = s.id;
+
+
+create view all_items_ids as
+select items.id as item, type.id as type, item_type.id as itemType,
+       color.id as color, s.id as ShirtSize, picture_size.id as pictureSize,
+       items.price as price
+from items
+full outer join item_type_relation itr on items.id = itr.item_id
+full outer join type on type.id = itr.type_id
+full outer join item_item_type_relation iitr on items.id = iitr.item_id
+full outer join item_type on item_type.id = iitr.item_type_id
+full outer join color_item_relation cir on items.id = cir.item_id
+full outer join color on cir.color_id = color.id
+full outer join item_picture_size_relation ipsr on items.id = ipsr.item_id
+full outer join picture_size on picture_size.id = ipsr.picture_size_id
+full outer join item_size_relation isr on items.id = isr.item_id
+full outer join size s on isr.size_id = s.id;
+
+
+----------------------------------Query-------------------------------------------
+-- select * from all_items;
+-- select max(id) from items;
+--
+-- update items set price = 10000000000 where id = 1;
